@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Flight {
+  id            Int      @id @default(autoincrement())
+  flightCode    String   @unique
+  departureDate DateTime
+  departureTime Int
+  duration      Int
+  origin        String
+  destination   String
+
+  deals Deal[]
+}
+
+model Deal {
+  id       Int     @id @default(autoincrement())
+  url      String  @unique
+  cost     Decimal
+  flight   Flight  @relation(fields: [flightId], references: [id], onDelete: Cascade)
+  flightId Int
+
+  @@index([flightId], name: "idx_flightId")
+}
